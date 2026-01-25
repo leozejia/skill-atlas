@@ -1,20 +1,32 @@
-# Skill-Atlas 🧭
+# Skill-Atlas
 
 [![GitHub stars](https://img.shields.io/github/stars/leozejia/skill-atlas)](https://github.com/leozejia/skill-atlas)
 [![GitHub license](https://img.shields.io/github/license/leozejia/skill-atlas)](https://github.com/leozejia/skill-atlas/blob/main/LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Ready-ff6b6b)](https://claude.ai/code)
 [![Codex](https://img.shields.io/badge/Codex-Ready-4ecdc4)](https://codex.com)
 
-一个轻量的 Skills 目录布局，用软链接把 Claude Code 和 Codex 的 Skills 统一管理在同一个仓库里。  
-A lightweight skills layout that keeps Claude Code and Codex in one repo via symlinks.
+Skill-Atlas is a thin authoring layer for Skills. It focuses on local creation, iteration, and team workflow.
+It does not replace any installer. Distribution uses `npx add-skill` / `npx skills add` from a repo or URL.
 
-## 🧭 复制给 AI / Copy-Paste to AI
+Skill-Atlas 是 Skills 的本地创作薄层，用于本地创建、迭代与团队协作。
+它不会替代安装器，分发仍通过仓库或 URL 使用 `npx add-skill` / `npx skills add`。
 
-把仓库链接发给 Claude Code 或 Codex，然后直接让 AI 运行下面的命令。  
-Send the repo link to Claude Code or Codex and ask it to run these commands.
+There is no official Skills installer today; we treat Vercel's add-skill as a community tool.
+目前没有统一官方的 Skills 安装器；我们把 Vercel 的 add-skill 视作社区工具。
 
-示例指令（中文）：  
-Example prompt (CN):
+## AI 快速启动 / AI Quick Start
+
+把仓库链接发给 Claude Code 或 Codex，让它在项目根目录执行：
+Share the repo link with Claude Code or Codex and ask it to run in the project root:
+
+```
+chmod +x skill-atlas/manage.sh
+./skill-atlas/manage.sh setup
+./manage.sh doctor
+./manage.sh list shared
+```
+
+中文提示词：
 
 ```
 请阅读这个仓库并在项目根目录执行：
@@ -25,7 +37,7 @@ chmod +x skill-atlas/manage.sh
 最后告诉我 Skills 是否可用。
 ```
 
-Example prompt (EN):
+English prompt:
 
 ```
 Read this repo and run in the project root:
@@ -33,69 +45,61 @@ chmod +x skill-atlas/manage.sh
 ./skill-atlas/manage.sh setup
 ./manage.sh doctor
 ./manage.sh list shared
-Tell me whether Skills are ready.
+Then tell me whether Skills are ready.
 ```
 
-## 🎯 目标 / Goals
+## 定位 / Positioning
 
-- 统一管理 Skills 目录，避免重复复制  
-  Keep skills in one place without duplicating files
-- 兼容 `SKILL.md` 标准，便于扩展  
-  Stay compatible with the `SKILL.md` convention
-- 简单可理解，能被脚本化  
-  Keep it simple and scriptable
+- 本项目是 Skills 本地创作与协作的薄层 / A thin layer for local Skills authoring and teamwork
+- 统一 `custom/` 与 `shared/` 的流程，不做全局注册 / Keeps `custom/` and `shared/` workflow consistent, no registry
+- 分发交给 `add-skill` 生态 / Distribution stays with the `add-skill` ecosystem
 
-## 🚀 快速开始 / Quick Start
+## 工作流 / Workflow
 
-在包含 `.claude/` 的项目根目录运行（并确保 `skill-atlas/` 位于该目录下）：  
-Run this from your project root that contains `.claude/` (with `skill-atlas/` inside it):
+- `custom/` 中迭代 Skills，`shared/` 存放可发布版本 / Iterate in `custom/`, publish-ready Skills live in `shared/`
+- `./manage.sh publish <name>` 把 Skills 从 `custom/` 提升到 `shared/` / Promote a Skill to `shared/`
+- `./manage.sh sync` 把 `shared/` 链接到目标工具目录 / Sync `shared/` into agent directories
+- `npx add-skill` 用仓库或 URL 分发 / Distribute via repo or URL with `npx add-skill`
+
+## 安装与分发 / Distribution (add-skill)
+
+`npx add-skill` / `npx skills add` 从仓库或 URL 安装，不会从本地 `~/.agents/skills` 读取。
+`npx add-skill` / `npx skills add` install from repo or URL; they do not read your local `~/.agents/skills`.
+
+本地安装示例 / Local install:
 
 ```bash
-# 1) 一键部署 / one-click setup
-chmod +x skill-atlas/manage.sh
-./skill-atlas/manage.sh setup
-
-# 2) 测试 Skills 共享 / verify
-# Claude Code: 使用 skill-atlas-test Skills 测试统一管理
-# Codex: Use skill-atlas-test skill to verify unified management
+npx add-skill ./skill-atlas/shared --skill <skill-name> --agent claude-code codex --yes --global
 ```
 
-如果 `skill-atlas/` 不在项目根目录，可以指定项目路径：  
-If `skill-atlas/` lives elsewhere, pass the project root:
+分发给他人 / Distribute to others:
 
 ```bash
-./skill-atlas/deploy.sh --project-root /path/to/project
+npx add-skill <owner>/skill-atlas --skill <skill-name> --agent claude-code codex --yes --global
 ```
 
-目标工具目录来自 `targets.conf`，后续接入 Gemini/OpenCode 只需追加一行即可。  
-Targets come from `targets.conf`; add one line to enable Gemini/OpenCode later.
+安装位置 / Install location:
 
-## 🏗️ 结构 / Layout
+- `~/.agents/skills/<skill>`
+- `~/.claude/skills/<skill>`、`~/.codex/skills/<skill>`（通常是软链接 / usually symlinks）
+
+## 目录结构 / Layout
 
 ```
-skill-atlas/                    # 中央管理 / central repo
-├── shared/                     # 已发布 Skills / published skills
-│   └── skill-atlas-test/      # 测试 Skills / test skill
-├── official/                   # 官方镜像（可选）/ optional mirror
-├── custom/                     # 本地迭代 Skills / local iteration
-├── targets.conf                # 目标工具目录 / target directories
-├── deploy.sh                   # 一键部署 / setup script
-└── manage.sh                   # 管理命令（由 deploy.sh 生成）
-
-🔗 自动链接 / symlinks:
-.claude/skills/skill-atlas  ──┐
-                             ├─→ skill-atlas/
-~/.codex/skills/skill-atlas ─┘
-
-# 为了让工具直接发现 Skills，还会生成直链 / direct links for discovery:
-.claude/skills/<skill>  ─→ skill-atlas/shared/<skill>
-~/.codex/skills/<skill> ─→ skill-atlas/shared/<skill>
+skill-atlas/
+├── shared/          # 可发布的 Skills / publish-ready Skills
+├── custom/          # 本地迭代 / local iteration
+├── official/        # 可选镜像 / optional mirror
+├── template/        # 新建 Skills 模板 / new Skill template
+├── targets.conf     # 目标目录 / target directories
+├── deploy.sh        # 初始化脚本 / setup script
+└── manage.sh        # 管理脚本（由 deploy.sh 生成）/ manager (generated)
 ```
 
-## 🎯 目标目录 / Targets
+## 目标目录 / Targets
 
-编辑 `targets.conf` 添加新的工具目录（相对路径会基于项目根目录解析）：  
-Edit `targets.conf` to add more tools (relative paths resolve from project root):
+编辑 `targets.conf` 追加新的工具目录（相对路径基于项目根目录）。
+Edit `targets.conf` to add new tool directories (relative paths resolve from project root).
 
 ```text
 claude:.claude/skills
@@ -104,54 +108,24 @@ codex:~/.codex/skills
 # opencode:/path/to/opencode/skills
 ```
 
-## 📋 使用示例 / Examples
-
-```
-# 在 custom 中迭代 / iterate in custom
-./manage.sh add my-skill --custom
-
-# 发布到 shared / publish to shared
-./manage.sh publish my-skill
-
-# 测试 Skills / test a skill
-使用 my-skill Skills 处理我的任务
-
-# 列出 Skills / list skills
-./manage.sh list shared
-```
-
-## 🛠 管理命令 / Commands
+## 命令 / Commands
 
 ```bash
-./manage.sh list [shared|custom|all]     # 列出 Skills / list skills
-./manage.sh add <name> [--custom|--shared] # 新建 Skills / add a skill
-./manage.sh publish <name>              # custom -> shared
-./manage.sh setup [project-root]         # 一键部署 / one-click setup
-./manage.sh test                         # 运行测试 / run tests
-./manage.sh sync                         # 同步软链接 / refresh symlinks
-./manage.sh doctor                       # 检查链接状态 / check link status
+./manage.sh list [shared|custom|all]        # 列出 Skills / list Skills
+./manage.sh add <name> [--custom|--shared]  # 新建 Skills / add a Skill
+./manage.sh publish <name>                  # custom -> shared
+./manage.sh setup [project-root]            # 初始化 / setup
+./manage.sh sync                            # 刷新链接 / refresh links
+./manage.sh doctor                          # 检查链接 / check links
+./manage.sh test                            # 输出测试提示 / print test hint
 ```
 
-## 🔎 说明 / Notes
+## 说明 / Notes
 
-- 这不是唯一的做法，类似的布局一定有人做过  
-  This is not the only approach, and similar layouts likely exist
-- 目前偏脚本化和轻量化，后续欢迎一起迭代  
-  It is intentionally minimal and open to iteration
-- `shared` 会被同步到目标工具目录；`custom` 不会  
-  Only `shared` is linked into target tool directories
-- 新接入工具时编辑 `targets.conf`，支持相对路径和 `~`  
-  Add new tools by editing `targets.conf` (relative paths and `~` are supported)
-- `template/` 是新建 Skills 的模板来源  
-  `template/` provides the SKILL.md template for new Skills
-- `./manage.sh` 是项目根目录的 wrapper，真实脚本在 `skill-atlas/manage.sh`  
-  `./manage.sh` is a wrapper in project root; the real script lives in `skill-atlas/manage.sh`
+- 仅 `shared/` 会被同步到目标目录 / Only `shared/` is synced to targets
+- `template/` 为 `manage.sh add` 提供 SKILL.md 模板 / `template/` backs `manage.sh add`
+- `./manage.sh` 在项目根目录是 wrapper / Repo root `./manage.sh` is a wrapper
 
-## 📄 许可证 / License
+## License
 
 [Apache 2.0](LICENSE)
-
-## 🙌 致谢 / Thanks
-
-- [Anthropic Skills](https://github.com/anthropics/skills) - 规范参考
-- Claude Code & Codex 社区
