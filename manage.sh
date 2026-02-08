@@ -225,6 +225,7 @@ case "${1:-}" in
     setup) setup "${2:-}" ;;
     sync) link_skill_atlas_root; link_shared_skills ;;
     test) echo "使用 skill-atlas-test 技能测试系统" ;;
+    ui) python "$skill_atlas_dir/tools/skills-ui.py" ;;
     doctor) doctor ;;
-    *) echo "manage.sh [list [shared|custom|all]|add <name> [--custom|--shared]|publish <name>|setup [project-root]|sync|test|doctor]" ;;
+    *) echo "manage.sh [list [shared|custom|all]|add <name> [--custom|--shared]|publish <name>|setup [project-root]|sync|test|ui|doctor]" ;;
 esac

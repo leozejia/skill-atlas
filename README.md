@@ -5,11 +5,12 @@
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Ready-ff6b6b)](https://claude.ai/code)
 [![Codex](https://img.shields.io/badge/Codex-Ready-4ecdc4)](https://codex.com)
 
-Skill-Atlas is a thin authoring layer for Skills. It focuses on local creation, iteration, and team workflow.
-It does not replace any installer. Distribution uses `npx add-skill` / `npx skills add` from a repo or URL.
+Skill-Atlas is a scaffolding layer for Skills and a general-purpose tool layer.
+It helps non-technical users install and manage Skills, with a local visual
+manager that syncs the skills.sh (Vercel) ranking to your machine.
 
-Skill-Atlas 是 Skills 的本地创作薄层，用于本地创建、迭代与团队协作。
-它不会替代安装器，分发仍通过仓库或 URL 使用 `npx add-skill` / `npx skills add`。
+Skill-Atlas 是 Skills 的脚手架层，也是通用工具层。
+它让普通人也能用上 Skills，并提供可视化页面同步 skills.sh（Vercel 生态）排行榜到本机。
 
 There is no official Skills installer today; we treat Vercel's add-skill as a community tool.
 目前没有统一官方的 Skills 安装器；我们把 Vercel 的 add-skill 视作社区工具。
@@ -22,8 +23,7 @@ Share the repo link with Claude Code or Codex and ask it to run in the project r
 ```
 chmod +x skill-atlas/manage.sh
 ./skill-atlas/manage.sh setup
-./manage.sh doctor
-./manage.sh list shared
+./manage.sh ui
 ```
 
 中文提示词：
@@ -32,9 +32,8 @@ chmod +x skill-atlas/manage.sh
 请阅读这个仓库并在项目根目录执行：
 chmod +x skill-atlas/manage.sh
 ./skill-atlas/manage.sh setup
-./manage.sh doctor
-./manage.sh list shared
-最后告诉我 Skills 是否可用。
+./manage.sh ui
+打开页面后告诉我已安装的 Skills 数量。
 ```
 
 English prompt:
@@ -43,23 +42,30 @@ English prompt:
 Read this repo and run in the project root:
 chmod +x skill-atlas/manage.sh
 ./skill-atlas/manage.sh setup
-./manage.sh doctor
-./manage.sh list shared
-Then tell me whether Skills are ready.
+./manage.sh ui
+Open the page and tell me how many Skills are installed.
 ```
 
-## 定位 / Positioning
+## 可视化管理 / Visual Manager
+定位：通用工具层的 Skills 脚手架。
 
-- 本项目是 Skills 本地创作与协作的薄层 / A thin layer for local Skills authoring and teamwork
-- 统一 `custom/` 与 `shared/` 的流程，不做全局注册 / Keeps `custom/` and `shared/` workflow consistent, no registry
-- 分发交给 `add-skill` 生态 / Distribution stays with the `add-skill` ecosystem
+启动：
 
-## 工作流 / Workflow
+```bash
+./manage.sh ui
+# 浏览器打开 http://127.0.0.1:5199
+```
 
-- `custom/` 中迭代 Skills，`shared/` 存放可发布版本 / Iterate in `custom/`, publish-ready Skills live in `shared/`
-- `./manage.sh publish <name>` 把 Skills 从 `custom/` 提升到 `shared/` / Promote a Skill to `shared/`
-- `./manage.sh sync` 把 `shared/` 链接到目标工具目录 / Sync `shared/` into agent directories
-- `npx add-skill` 用仓库或 URL 分发 / Distribute via repo or URL with `npx add-skill`
+你可以在页面里：
+- 查看 Top Skills 是否已安装
+- 一键同步 Top Skills（安装缺失项）
+- 强制更新（覆盖已安装版本）
+
+## 高级：自定义迭代 / Advanced: Local Iteration
+
+- 在 `custom/` 中迭代 Skills，发布到 `shared/`
+- `./manage.sh publish <name>` 把 Skills 从 `custom/` 提升到 `shared/`
+- `./manage.sh sync` 把 `shared/` 链接到本地 agent 目录
 
 ## 安装与分发 / Distribution (add-skill)
 
@@ -87,44 +93,35 @@ npx add-skill <owner>/skill-atlas --skill <skill-name> --agent claude-code codex
 
 ```
 skill-atlas/
-├── shared/          # 可发布的 Skills / publish-ready Skills
-├── custom/          # 本地迭代 / local iteration
-├── official/        # 可选镜像 / optional mirror
-├── template/        # 新建 Skills 模板 / new Skill template
-├── targets.conf     # 目标目录 / target directories
-├── deploy.sh        # 初始化脚本 / setup script
-└── manage.sh        # 管理脚本（由 deploy.sh 生成）/ manager (generated)
-```
-
-## 目标目录 / Targets
-
-编辑 `targets.conf` 追加新的工具目录（相对路径基于项目根目录）。
-Edit `targets.conf` to add new tool directories (relative paths resolve from project root).
-
-```text
-claude:.claude/skills
-codex:~/.codex/skills
-# gemini:/path/to/gemini/skills
-# opencode:/path/to/opencode/skills
+├── shared/          # publish-ready Skills
+├── custom/          # local iteration
+├── official/        # optional mirror
+├── template/        # new Skill template
+├── targets.conf     # target directories
+├── tools/           # scripts (installer/UI)
+├── ui/              # visual manager
+├── deploy.sh        # setup script
+└── manage.sh        # manager (generated)
 ```
 
 ## 命令 / Commands
 
 ```bash
-./manage.sh list [shared|custom|all]        # 列出 Skills / list Skills
-./manage.sh add <name> [--custom|--shared]  # 新建 Skills / add a Skill
-./manage.sh publish <name>                  # custom -> shared
-./manage.sh setup [project-root]            # 初始化 / setup
-./manage.sh sync                            # 刷新链接 / refresh links
-./manage.sh doctor                          # 检查链接 / check links
-./manage.sh test                            # 输出测试提示 / print test hint
+./manage.sh list [shared|custom|all]
+./manage.sh add <name> [--custom|--shared]
+./manage.sh publish <name>
+./manage.sh setup [project-root]
+./manage.sh sync
+./manage.sh doctor
+./manage.sh test
+./manage.sh ui
 ```
 
 ## 说明 / Notes
 
-- 仅 `shared/` 会被同步到目标目录 / Only `shared/` is synced to targets
-- `template/` 为 `manage.sh add` 提供 SKILL.md 模板 / `template/` backs `manage.sh add`
-- `./manage.sh` 在项目根目录是 wrapper / Repo root `./manage.sh` is a wrapper
+- 本仓库只对接 skills.sh（Vercel 生态）排行榜的可视化同步
+- `custom/` 仍适合团队自定义迭代，`shared/` 用于发布
+- `./manage.sh` 在项目根目录是 wrapper
 
 ## License
 

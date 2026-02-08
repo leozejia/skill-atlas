@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Skill-Atlas | Skills 可视化管理</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="badge">Skill-Atlas · Skills UI</div>
+        <h1>让普通人也能用上 Skills</h1>
+        <p class="lead">
+          这是一个本地可视化页面，用来同步 skills.sh（Vercel 生态）的排行榜 Skills。
+          点击即可安装或刷新 Top Skills，不需要手动命令。
+        </p>
+        <div class="actions">
+          <button id="sync-btn" class="primary">同步 Top Skills</button>
+          <button id="refresh-btn" class="danger">强制更新（覆盖）</button>
+          <button id="report-btn" class="secondary">查看最新报告</button>
+        </div>
+        <div class="status-bar">
+          <div class="status-card">已安装 Skills<span id="installed-count">--</span></div>
+          <div class="status-card">Top 已安装<span id="installed-top-count">--</span></div>
+          <div class="status-card">Top 未安装<span id="missing-count">--</span></div>
+        </div>
+      </header>
+
+      <section class="panel">
+        <h2>Top Skills 列表</h2>
+        <div class="controls">
+          <label>
+            排行视图
+            <select id="summary-view">
+              <option value="all-time">All-time</option>
+              <option value="trending">Trending (24h)</option>
+              <option value="hot">Hot</option>
+            </select>
+          </label>
+          <label>
+            数量
+            <select id="limit-input">
+              <option value="40">40</option>
+              <option value="80" selected>80</option>
+              <option value="120">120</option>
+            </select>
+          </label>
+          <div class="notice" id="job-status">加载中...</div>
+        </div>
+        <div class="list" id="skills-list"></div>
+      </section>
+
+      <section class="panel">
+        <h2>运行日志</h2>
+        <div class="log" id="log-box">等待任务启动...</div>
+      </section>
+
+      <section class="panel">
+        <h2>本地迭代 & 测试（可选）</h2>
+        <div class="grid-two">
+          <div>
+            <p class="lead">如果你想自己迭代 Skills，可以在本仓库的 custom/ 中进行，然后发布到 shared/。</p>
+            <div class="path">
+              <span id="custom-path">custom/ 目录路径</span>
+              <button class="secondary" id="custom-copy" data-copy="">复制路径</button>
+            </div>
+          </div>
+          <div>
+            <p class="lead">测试发布后的 Skills 可用性：</p>
+            <div class="path">
+              <span id="shared-path">shared/ 目录路径</span>
+              <button class="secondary" id="shared-copy" data-copy="">复制路径</button>
+            </div>
+          </div>
+        </div>
+        <div class="notice" style="margin-top: 16px;">
+          提示：本 UI 只负责同步 Vercel skills.sh 排行；自定义迭代仍建议走 Skill-Atlas 的 custom → shared 流程。
+        </div>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
