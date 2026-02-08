@@ -1,0 +1,39 @@
+---
+name: web-reader-skills
+description: Fetch and read WeChat/Weixin public account articles via MCP when the user provides a mp.weixin.qq.com link (微信/公众号文章链接) or asks to summarize/translate/analyze a WeChat article; call read_weixin_article and use title/author/publish_time/content.
+---
+# web-reader-skills
+
+## 适用范围
+- 仅用于 `mp.weixin.qq.com` 文章链接。
+- 识别到微信/公众号文章链接或需要阅读/总结/翻译/提取文章信息时，使用本 Skills。
+- 非微信文章页面不要使用。
+
+## 前置配置（一次性）
+- 安装依赖：
+  - `python -m pip install -r /absolute/path/to/skill-atlas/shared/web-reader-skills/requirements.txt`
+  - `python -m playwright install chromium`（首次运行需要）
+- 配置 MCP server（替换为实际路径）：
+
+```json
+{
+  "mcpServers": {
+    "weixin-reader": {
+      "command": "python",
+      "args": [
+        "/absolute/path/to/skill-atlas/shared/web-reader-skills/src/server.py"
+      ]
+    }
+  }
+}
+```
+
+## 使用流程
+1. 提取微信文章 URL（`mp.weixin.qq.com`）。
+2. 调用 `read_weixin_article(url)` 获取标题、作者、发布时间、正文内容。
+3. 若 `success=false`，输出 `error` 并请用户提供有效链接或重试。
+4. 若成功，基于 `content` 完成总结、翻译或分析。
+
+## 注意事项
+- 避免高频请求，遵守平台规范与使用条款。
+- 遇到格式校验失败时，要求用户提供 `mp.weixin.qq.com/s` 的文章链接。
