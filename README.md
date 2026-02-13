@@ -17,7 +17,7 @@ skill-atlas/
         ├── jarvis/
         ├── guardian/
         ├── archivist/
-        ├── narrative/
+        ├── marketing/
         └── logic/
 ```
 
