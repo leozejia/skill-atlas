@@ -15,8 +15,6 @@ skill-atlas/
     ├── global/        # 全局共享候选
     └── agents/        # 身份专用候选
         ├── jarvis/
-        ├── guardian/
-        ├── archivist/
         ├── marketing/
         └── logic/
 ```
