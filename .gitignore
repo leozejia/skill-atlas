@@ -1,3 +1,5 @@
-/download/
 /review/
 /distribute/
+.temp/
+.review-state.json
+

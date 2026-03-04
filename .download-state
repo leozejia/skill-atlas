@@ -1,0 +1,28 @@
+# Skill Atlas Download State
+# 用于记录已从 skills.sh 下载的技能，避免重复下载
+# 格式: skill_id|repo|status|date
+# status: pending|reviewed|distributed|skipped
+
+# 2026-03-03 Top 100 扫描记录
+# 当前 skill-atlas 已有技能 (distribute/global/ + review/)
+
+## 已分发 (distribute/global/)
+agent-browser|inference-sh-9/skills|distributed|2026-02-13
+agent-tools|inference-sh-9/skills|distributed|2026-02-13
+audit-website|sahilsingh1222/skills|distributed|2026-02-13
+brainstorming|obra/superpowers|distributed|2026-02-13
+browser-use|browser-use/skills|distributed|2026-02-13
+c4-architecture|c4-architecture/skills|distributed|2026-02-11
+docx|docx/skills|distributed|2026-02-13
+executing-plans|obra/superpowers|distributed|2026-02-13
+find-skills|vercel-labs/skills|distributed|2026-02-13
+pdf|pdf/skills|distributed|2026-02-13
+session-handoff|session-handoff/skills|distributed|2026-02-11
+systematic-debugging|obra/superpowers|distributed|2026-03-03
+verification-before-completion|obra/superpowers|distributed|2026-02-13
+webapp-testing|webapp-testing/skills|distributed|2026-02-13
+writing-plans|obra/superpowers|distributed|2026-02-13
+xlsx|xlsx/skills|distributed|2026-02-13
+
+## 已在评审区 (review/)
+# 仅列出部分，完整列表见 review/ 目录
